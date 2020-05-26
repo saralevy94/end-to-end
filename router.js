@@ -6,10 +6,21 @@ function Router(app) {
         res.send(`<h1>Hello word</h1>`)
     })
 
-    app.post('/products', async (req, res) => {
+    app.post('/product', async (req, res) => {
         try {
             const { body } = req
-            const result = await BL.products.create({ barcode: body.barcode })
+            const result = await BL.products.create
+                ({
+                    barcode: body.barcode,
+                    name: body.name,
+                    price: body.price,
+                    department: body.department,
+                    category: body.category,
+                    image: body.image,
+                    brand: body.brand,
+                    tags: body.tags,
+                    description: body.description,
+                })
             res.send(result)
         } catch (error) {
             res.send({ error: error.message || error })
@@ -23,20 +34,21 @@ function Router(app) {
             res.send({ error: error.message || error })
         }
     })
-    app.put('/product/:barcode', async (req, res) => {
+    app.put('/product', async (req, res) => {
         try {
-            const { barcode } = req.params,
-                { newPrice } = req.qeury
-            const result = await BL.products.update({ barcode, newPrice })
+            const { body } = req
+            const result = await BL.products.update({ barcode: body.barcode, price: body.price })
             res.send(result)
         } catch (error) {
             res.send({ error: error.message || error })
         }
     })
-    app.delete('/product/:barcode', async (req, res) => {
+    app.delete('/product', async (req, res) => {
         try {
-            const { barcode } = req.params
-            const result = await BL.products.findOneAndDelete({ barcode:barcode })
+            const { body } = req
+
+            // const { barcode } = req.params
+            const result = await BL.products.delete({ barcode: body.barcode })
             res.send(result)
         } catch (error) {
             res.send({ error: error.message || error })
