@@ -34,25 +34,44 @@ function Router(app) {
             res.send({ error: error.message || error })
         }
     })
-    app.put('/product', async (req, res) => {
+    app.get('/productFilter/:filter', async (req, res) => {
         try {
-            const { body } = req
-            const result = await BL.products.update({ barcode: body.barcode, price: body.price })
-            res.send(result)
+            const { Category } = req.params
+            const result = await BL.products.getOneAllAndFilterCategory(Category)
+            res.send(result) //http/localhost
         } catch (error) {
             res.send({ error: error.message || error })
         }
     })
-    app.delete('/product', async (req, res) => {
-        try {
-            const { body } = req
 
-            // const { barcode } = req.params
-            const result = await BL.products.delete({ barcode: body.barcode })
-            res.send(result)
-        } catch (error) {
-            res.send({ error: error.message || error })
-        }
-    })
+app.get('/productFilter/', async (req, res) => {
+    try {
+        const { from, to } = req.body
+        const result = await BL.products.getOneAllAndFilterPrice(from, to)
+        res.send(result) //http/localhost
+    } catch (error) {
+        res.send({ error: error.message || error })
+    }
+})
+app.put('/product', async (req, res) => {
+    try {
+        const { body } = req
+        const result = await BL.products.update({ barcode: body.barcode, price: body.price })
+        res.send(result)
+    } catch (error) {
+        res.send({ error: error.message || error })
+    }
+})
+app.delete('/product', async (req, res) => {
+    try {
+        const { body } = req
+
+        // const { barcode } = req.params
+        const result = await BL.products.delete({ barcode: body.barcode })
+        res.send(result)
+    } catch (error) {
+        res.send({ error: error.message || error })
+    }
+})
 }
 module.exports = Router

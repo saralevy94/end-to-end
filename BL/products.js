@@ -2,19 +2,45 @@ module.exports = function products(DL) {
     return {
 
         create: (data) => {
-            const { barcode, name, price, discription, category, image, brand, tags, description } = data
-            return DL.createProduct(data)
+            const { barcode } = data
+            let dlReturn = await DL.getOnePrudactByBarcode(barcode)
+            if (!dlReturn[0])
+                return DL.createProduct(data)
+            throw 'barcode exists'
         },
-        read: (data) => {
-            const { barcode, name, price } = data
+
+        read: () => {
             return DL.getProducts()
         },
-        update: (data) => {
-            return DL.updateProduct(data)
-        },
-        delete: (data) => {
-            return DL.deleteProduct(data)
 
+        readOneByPrice: (data) => {
+            return DL.getOneAllAndFilterPrice(data)
+        },
+
+        readOneByCategory: (category) => {
+            return DL.getAndFilterByDescription(category)
+        },
+
+        readOne: async (barcode) => {
+            let dlReturn = await DL.getOnePrudactByBarcode(barcode)
+            if (dlReturn[0])
+                return dlReturn
+            throw 'barcode dos not exist'
+        },
+
+        update: async (data) => {
+            let dlReturn = await DL.updateProduct(barcode)
+            if (dlReturn)
+                return dlReturn
+            throw 'barcode dos not exist'
+        },
+
+        delete: async (data) => {
+            const { barcode } = data
+            let dlReturn = await DL.getOnePrudactByBarcode(barcode)
+            if (dlReturn[0])
+                return DL.deleteProduct(data)
+            throw 'barcode exists'
         }
 
     }
